@@ -1,0 +1,26 @@
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/.terraform.lock.hcl
+
+# Node dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Environment configurations
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+
+# Kubernetes Secrets
+secrets.yaml
+k8s/secrets.yaml
+helm/portfolio/templates/secrets.yaml
+
+# OS files
+.DS_Store
+Thumbs.db

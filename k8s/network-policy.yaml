@@ -1,0 +1,73 @@
+# Network Policies for Atharva Portfolio
+# Establishes internal firewalls to restrict pod-to-pod communication.
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: portfolio
+spec:
+  # Deny all incoming traffic to all pods by default (zero trust model)
+  podSelector: {}
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-ingress
+  namespace: portfolio
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend
+  ingress:
+    # Allow HTTP web traffic from any source/ingress controller to the frontend
+    - ports:
+        - protocol: TCP
+          port: 80
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-backend-ingress
+  namespace: portfolio
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  ingress:
+    # Allow traffic to the backend API ONLY from the frontend pods or the Ingress controller
+    - from:
+        - podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - protocol: TCP
+          port: 5000
+  policyTypes:
+    - Ingress
+---
+# If a MongoDB database container is run inside the cluster
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-db-ingress
+  namespace: portfolio
+spec:
+  podSelector:
+    matchLabels:
+      app: mongodb
+  ingress:
+    # Strict Isolation: ONLY allow database requests coming from the backend pods
+    - from:
+        - podSelector:
+            matchLabels:
+              app: backend
+      ports:
+        - protocol: TCP
+          port: 27017
+  policyTypes:
+    - Ingress
