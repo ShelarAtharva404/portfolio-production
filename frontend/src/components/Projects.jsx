@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { projects } from "../data/portfolio";
-import { ExternalLink, Code2, Star } from "lucide-react";
+import { Code2, Star } from "lucide-react";
 
 const CATEGORIES = ["All", "DevOps & Infrastructure", "Full-Stack & Cloud Applications", "Cloud & AWS", "AI & Firebase", "Brand Design & Devops", "Systems & CS"];
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Code2, Link2, Mail, Phone, ArrowDown, Download } from "lucide-react";
+import { Code2, Link2, Mail, ArrowDown } from "lucide-react";
 import { personal } from "../data/portfolio";
 
 const ROLES = [
@@ -22,8 +22,10 @@ function TypingText() {
     if (!deleting && text === target) {
       timeout = setTimeout(() => setDeleting(true), 2000);
     } else if (deleting && text === "") {
-      setDeleting(false);
-      setIndex((i) => (i + 1) % ROLES.length);
+      timeout = setTimeout(() => {
+        setDeleting(false);
+        setIndex((i) => (i + 1) % ROLES.length);
+      }, 0);
     } else {
       const speed = deleting ? 40 : 80;
       timeout = setTimeout(() => {
