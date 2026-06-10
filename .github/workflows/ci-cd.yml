@@ -55,11 +55,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       # Build & Push Backend
       - name: Build and Push Backend Image
@@ -69,8 +74,8 @@ jobs:
           file: ./backend/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/portfolio-backend:latest
-            ${{ secrets.DOCKER_USERNAME }}/portfolio-backend:${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/portfolio-backend:latest
+            ${{ steps.login-ecr.outputs.registry }}/portfolio-backend:${{ github.sha }}
 
       # Build & Push Frontend
       - name: Build and Push Frontend Image
@@ -80,5 +85,5 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/portfolio-frontend:latest
-            ${{ secrets.DOCKER_USERNAME }}/portfolio-frontend:${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/portfolio-frontend:latest
+            ${{ steps.login-ecr.outputs.registry }}/portfolio-frontend:${{ github.sha }}
