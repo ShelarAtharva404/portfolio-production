@@ -1,16 +1,18 @@
-import { personal } from "../data/portfolio";
+import { personal as staticPersonal } from "../data/portfolio";
 import { Code2, Link2, Mail, Heart } from "lucide-react";
 
-export default function Footer() {
+export default function Footer({ personal }) {
+  const data = personal || staticPersonal;
+
   return (
     <footer className="py-10 px-4 sm:px-6 border-t border-[#1E1E30]">
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-accent/20 border border-accent/30 flex items-center justify-center">
-            <span className="font-mono text-xs font-bold text-accent">A</span>
+            <span className="font-mono text-xs font-bold text-accent">{data.name.charAt(0)}</span>
           </div>
           <span className="font-display text-sm text-text-secondary">
-            Atharva Shelar<span className="text-accent">.</span>
+            {data.name}<span className="text-accent">.</span>
           </span>
         </div>
 
@@ -20,9 +22,9 @@ export default function Footer() {
 
         <div className="flex items-center gap-3">
           {[
-            { icon: Code2, href: personal.github, label: "GitHub" },
-            { icon: Link2, href: personal.linkedin, label: "LinkedIn" },
-            { icon: Mail, href: `mailto:${personal.email}`, label: "Email" },
+            { icon: Code2, href: data.github, label: "GitHub" },
+            { icon: Link2, href: data.linkedin, label: "LinkedIn" },
+            { icon: Mail, href: `mailto:${data.email}`, label: "Email" },
           ].map(({ icon: Icon, href, label }) => (
             <a
               key={label}

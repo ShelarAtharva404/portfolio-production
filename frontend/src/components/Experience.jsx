@@ -1,5 +1,5 @@
 import { useInView } from "react-intersection-observer";
-import { experience } from "../data/portfolio";
+import { experience as staticExperience } from "../data/portfolio";
 import { MapPin, Calendar, CheckCircle2 } from "lucide-react";
 
 function ExperienceCard({ job, index }) {
@@ -84,8 +84,9 @@ function ExperienceCard({ job, index }) {
   );
 }
 
-export default function Experience() {
+export default function Experience({ experience: propExperience }) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+  const experienceList = propExperience || staticExperience;
 
   return (
     <section id="experience" className="py-24 px-4 sm:px-6 bg-surface/30">
@@ -104,8 +105,8 @@ export default function Experience() {
         </div>
 
         <div className="space-y-12 lg:space-y-16">
-          {experience.map((job, i) => (
-            <ExperienceCard key={job.company} job={job} index={i} />
+          {experienceList.map((job, i) => (
+            <ExperienceCard key={`${job.company}-${job.role}-${i}`} job={job} index={i} />
           ))}
         </div>
       </div>

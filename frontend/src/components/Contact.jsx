@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { personal } from "../data/portfolio";
+import { personal as staticPersonal } from "../data/portfolio";
 import { Mail, Phone, MapPin, Send, Code2, Link2, CheckCircle2, AlertCircle } from "lucide-react";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 
-export default function Contact() {
+export default function Contact({ personal }) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [status, setStatus] = useState(null); // null | "loading" | "success" | "error"
+
+  const data = personal || staticPersonal;
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -30,11 +32,11 @@ export default function Contact() {
   };
 
   const contactLinks = [
-    { icon: Mail, label: "Email", value: personal.email, href: `mailto:${personal.email}` },
-    { icon: Phone, label: "Phone", value: personal.phone, href: `tel:${personal.phone}` },
-    { icon: MapPin, label: "Location", value: personal.location, href: null },
-    { icon: Code2, label: "GitHub", value: "github.com/atharva", href: personal.github },
-    { icon: Link2, label: "LinkedIn", value: "linkedin.com/in/atharva", href: personal.linkedin },
+    { icon: Mail, label: "Email", value: data.email, href: `mailto:${data.email}` },
+    { icon: Phone, label: "Phone", value: data.phone, href: `tel:${data.phone}` },
+    { icon: MapPin, label: "Location", value: data.location, href: null },
+    { icon: Code2, label: "GitHub", value: data.github.replace("https://", ""), href: data.github },
+    { icon: Link2, label: "LinkedIn", value: data.linkedin.replace("https://", ""), href: data.linkedin },
   ];
 
   return (

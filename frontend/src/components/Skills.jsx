@@ -1,5 +1,5 @@
 import { useInView } from "react-intersection-observer";
-import { skills, currentlyLearning } from "../data/portfolio";
+import { skills as staticSkills, currentlyLearning as staticCurrentlyLearning } from "../data/portfolio";
 
 const categoryColors = {
   Frontend: "#6C63FF",
@@ -48,8 +48,11 @@ function SkillCard({ category, items, delay }) {
   );
 }
 
-export default function Skills() {
+export default function Skills({ skills: propSkills, currentlyLearning: propCurrentlyLearning }) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+  
+  const skillsList = propSkills || staticSkills;
+  const learningList = propCurrentlyLearning || staticCurrentlyLearning;
 
   return (
     <section id="skills" className="py-24 px-4 sm:px-6">
@@ -72,7 +75,7 @@ export default function Skills() {
 
         {/* Skill grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
-          {Object.entries(skills).map(([cat, items], i) => (
+          {Object.entries(skillsList).map(([cat, items], i) => (
             <SkillCard key={cat} category={cat} items={items} delay={i * 60} />
           ))}
         </div>
@@ -86,7 +89,7 @@ export default function Skills() {
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
           </div>
           <div className="flex flex-wrap gap-3">
-            {currentlyLearning.map((item) => (
+            {learningList.map((item) => (
               <span
                 key={item}
                 className="px-4 py-2 rounded-xl text-sm font-mono border border-accent/30 bg-accent/10 text-accent hover:bg-accent/20 transition-colors cursor-default"

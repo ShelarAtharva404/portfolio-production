@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Code2, Link2, Mail, ArrowDown } from "lucide-react";
-import { personal } from "../data/portfolio";
+import { personal as staticPersonal } from "../data/portfolio";
+import fallbackAvatar from "../assets/developer_avatar.png";
 
 const ROLES = [
   "Full-Stack Developer",
@@ -58,8 +59,9 @@ function FloatingOrb({ size, color, style }) {
   );
 }
 
-export default function Hero() {
+export default function Hero({ personal }) {
   const canvasRef = useRef(null);
+  const data = personal || staticPersonal;
 
   // Particle canvas
   useEffect(() => {
@@ -130,7 +132,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden grid-bg"
+      className="relative min-h-screen lg:flex lg:items-center lg:justify-center overflow-hidden grid-bg"
     >
       {/* Canvas background */}
       <canvas
@@ -144,90 +146,120 @@ export default function Hero() {
       <FloatingOrb size="300px" color="#FF4D4D" style={{ top: "50%", left: "60%" }} />
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-32 text-center">
-        {/* Status badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-accent/20 text-xs font-mono text-text-secondary mb-8">
-          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          Available for opportunities · Surat, Gujarat
-        </div>
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-20 lg:py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          {/* Left Side: Introduction */}
+          <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
+            {/* Status badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-accent/20 text-xs font-mono text-text-secondary mb-8">
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+              Available for opportunities · {data.location || "Surat, Gujarat, India"}
+            </div>
 
-        {/* Name */}
-        <h1 className="font-display font-bold text-4xl sm:text-6xl md:text-7xl text-text-primary mb-4 leading-tight">
-          Hi, I'm{" "}
-          <span className="relative inline-block">
-            <span className="text-gradient">Atharva</span>
-            <span
-              className="absolute -bottom-1 left-0 right-0 h-1 rounded-full"
-              style={{ background: "linear-gradient(90deg, #6C63FF, #00F5FF)" }}
-            />
-          </span>
-        </h1>
+            {/* Name */}
+            <h1 className="font-display font-bold text-4xl sm:text-6xl md:text-7xl text-text-primary mb-4 leading-tight">
+              Hi, I'm{" "}
+              <span className="relative inline-block">
+                <span className="text-gradient">{data.name.split(" ")[0]}</span>
+                <span
+                  className="absolute -bottom-1 left-0 right-0 h-1 rounded-full"
+                  style={{ background: "linear-gradient(90deg, #6C63FF, #00F5FF)" }}
+                />
+              </span>
+            </h1>
 
-        {/* Typing role */}
-        <div className="text-2xl sm:text-3xl md:text-4xl mb-6 h-12 flex items-center justify-center">
-          <TypingText />
-        </div>
+            {/* Typing role */}
+            <div className="text-2xl sm:text-3xl md:text-4xl mb-6 h-12 flex items-center justify-center lg:justify-start">
+              <TypingText />
+            </div>
 
-        {/* Tagline */}
-        <p className="text-text-secondary text-lg sm:text-xl max-w-2xl mx-auto mb-4 font-display">
-          {personal.tagline}
-        </p>
-        <p className="text-text-muted text-sm sm:text-base max-w-xl mx-auto mb-10">
-          {personal.bio}
-        </p>
+            {/* Tagline */}
+            <p className="text-text-secondary text-lg sm:text-xl mb-4 font-display">
+              {data.tagline}
+            </p>
+            <p className="text-text-muted text-sm sm:text-base mb-10 leading-relaxed max-w-xl">
+              {data.bio}
+            </p>
 
-        {/* Stats */}
-        <div className="flex items-center justify-center gap-6 sm:gap-10 mb-10">
-          {[
-            { label: "CGPA", value: "8.61" },
-            { label: "Projects", value: "15+" },
-            { label: "Internships", value: "2" },
-          ].map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="font-display font-bold text-2xl sm:text-3xl text-gradient">
-                {s.value}
-              </div>
-              <div className="text-text-muted text-xs font-mono uppercase tracking-widest mt-1">
-                {s.label}
+            {/* Stats */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 sm:gap-10 mb-10 w-full lg:w-auto">
+              {[
+                { label: "CGPA", value: data.cgpa || "8.61" },
+                { label: "Projects", value: data.projects || "15+" },
+                { label: "Internships", value: data.internships || "2" },
+              ].map((s) => (
+                <div key={s.label} className="text-center lg:text-left">
+                  <div className="font-display font-bold text-2xl sm:text-3xl text-gradient">
+                    {s.value}
+                  </div>
+                  <div className="text-text-muted text-xs font-mono uppercase tracking-widest mt-1">
+                    {s.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4 mb-12 w-full sm:w-auto">
+              <a
+                href="#projects"
+                className="w-full sm:w-auto px-8 py-3 rounded-xl font-medium text-sm bg-accent text-white hover:bg-accent/80 transition-all duration-300 glow-accent text-center"
+              >
+                View Projects
+              </a>
+              <a
+                href="#resume"
+                className="w-full sm:w-auto px-8 py-3 rounded-xl font-medium text-sm glass border border-[#1E1E30] text-text-primary hover:border-accent/40 hover:bg-accent/5 transition-all duration-300 text-center"
+              >
+                View CV
+              </a>
+              <a
+                href="#contact"
+                className="w-full sm:w-auto px-8 py-3 rounded-xl font-medium text-sm glass border border-accent/30 text-text-primary hover:border-accent/60 hover:bg-accent/10 transition-all duration-300 text-center"
+              >
+                Get in Touch
+              </a>
+            </div>
+
+            {/* Social Links */}
+            <div className="flex items-center justify-center lg:justify-start gap-4">
+              {[
+                { icon: Code2, href: data.github, label: "GitHub" },
+                { icon: Link2, href: data.linkedin, label: "LinkedIn" },
+                { icon: Mail, href: `mailto:${data.email}`, label: "Email" },
+              ].map(({ icon: Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-xl glass border border-white/5 text-text-secondary hover:text-accent hover:border-accent/30 transition-all duration-200"
+                  aria-label={label}
+                >
+                  <Icon size={18} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Side: Profile Photo */}
+          <div className="lg:col-span-5 flex justify-center lg:justify-end w-full order-1 lg:order-2">
+            <div className="relative group">
+              {/* Outer glowing backdrops */}
+              <div className="absolute -inset-1.5 rounded-full bg-gradient-to-r from-accent to-[#00F5FF] opacity-35 blur-lg group-hover:opacity-60 transition duration-500 animate-pulse-slow" />
+              
+              {/* Image Container with Round Border */}
+              <div className="relative w-60 h-60 sm:w-72 sm:h-72 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-accent/30 shadow-2xl bg-[#0C0C14]">
+                <img
+                  src={data.avatar || fallbackAvatar}
+                  alt={data.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
               </div>
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-          <a
-            href="#projects"
-            className="w-full sm:w-auto px-8 py-3 rounded-xl font-medium text-sm bg-accent text-white hover:bg-accent/80 transition-all duration-300 glow-accent"
-          >
-            View Projects
-          </a>
-          <a
-            href="#contact"
-            className="w-full sm:w-auto px-8 py-3 rounded-xl font-medium text-sm glass border border-accent/30 text-text-primary hover:border-accent/60 hover:bg-accent/10 transition-all duration-300"
-          >
-            Get in Touch
-          </a>
-        </div>
-
-        {/* Social Links */}
-        <div className="flex items-center justify-center gap-4">
-          {[
-            { icon: Code2, href: personal.github, label: "GitHub" },
-            { icon: Link2, href: personal.linkedin, label: "LinkedIn" },
-            { icon: Mail, href: `mailto:${personal.email}`, label: "Email" },
-          ].map(({ icon: Icon, href, label }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 rounded-xl glass border border-white/5 text-text-secondary hover:text-accent hover:border-accent/30 transition-all duration-200"
-              aria-label={label}
-            >
-              <Icon size={18} />
-            </a>
-          ))}
         </div>
       </div>
 

@@ -1,9 +1,12 @@
 import { useInView } from "react-intersection-observer";
-import { education, achievements, personal } from "../data/portfolio";
+import { education as staticEducation, achievements as staticAchievements, personal as staticPersonal } from "../data/portfolio";
 import { GraduationCap, Trophy, MapPin, Zap } from "lucide-react";
 
-export default function About() {
+export default function About({ personal, education: propEducation, achievements: propAchievements }) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+  const data = personal || staticPersonal;
+  const eduList = propEducation || staticEducation;
+  const achList = propAchievements || staticAchievements;
 
   return (
     <section id="about" className="py-24 px-4 sm:px-6 bg-surface/30">
@@ -22,13 +25,13 @@ export default function About() {
           {/* Left: Bio + quick facts */}
           <div className="space-y-6">
             <div className="glass rounded-2xl p-6 border border-[#1E1E30]">
-              <p className="text-text-secondary leading-relaxed mb-6">{personal.bio}</p>
+              <p className="text-text-secondary leading-relaxed mb-6">{data.bio}</p>
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { label: "Location", value: "Surat, Gujarat", icon: MapPin },
+                  { label: "Location", value: data.location || "Surat, Gujarat", icon: MapPin },
                   { label: "Focus", value: "Cloud + Full-Stack", icon: Zap },
-                  { label: "CGPA", value: "8.61 / 10", icon: GraduationCap },
-                  { label: "Projects", value: "15+ Deployed", icon: Trophy },
+                  { label: "CGPA", value: `${data.cgpa || "8.61"} / 10`, icon: GraduationCap },
+                  { label: "Projects", value: `${data.projects || "15+"} Deployed`, icon: Trophy },
                 ].map(({ label, value, icon: Icon }) => (
                   <div key={label} className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center flex-shrink-0">
@@ -50,7 +53,7 @@ export default function About() {
                 <span className="text-xs font-mono uppercase tracking-widest text-gold">Achievements</span>
               </div>
               <ul className="space-y-3">
-                {achievements.map((a, i) => (
+                {achList.map((a, i) => (
                   <li key={i} className="flex items-start gap-3 text-sm text-text-secondary">
                     <span className="text-gold mt-0.5 text-xs font-mono">{String(i + 1).padStart(2, "0")}</span>
                     {a}
@@ -66,7 +69,7 @@ export default function About() {
               <GraduationCap size={16} className="text-accent" />
               <span className="text-xs font-mono uppercase tracking-widest text-accent">Education</span>
             </div>
-            {education.map((edu, i) => (
+            {eduList.map((edu, i) => (
               <EducationCard key={i} edu={edu} index={i} />
             ))}
 

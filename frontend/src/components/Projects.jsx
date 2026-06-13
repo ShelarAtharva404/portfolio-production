@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { projects } from "../data/portfolio";
+import { projects as staticProjects } from "../data/portfolio";
 import { Code2, Star } from "lucide-react";
 
 const CATEGORIES = ["All", "DevOps & Infrastructure", "Full-Stack & Cloud Applications", "Cloud & AWS", "AI & Firebase", "Brand Design & Devops", "Systems & CS"];
@@ -34,6 +34,8 @@ function ProjectCard({ project, index }) {
             href={project.github}
             className="p-2 rounded-lg text-text-muted hover:text-accent hover:bg-accent/10 transition-colors"
             aria-label="View on GitHub"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <Code2 size={16} />
           </a>
@@ -58,12 +60,12 @@ function ProjectCard({ project, index }) {
 
       {/* Stack */}
       <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[#1E1E30]">
-        {project.stack.slice(0, 5).map((tech) => (
+        {project.stack && project.stack.slice(0, 5).map((tech) => (
           <span key={tech} className="skill-tag text-xs">
             {tech}
           </span>
         ))}
-        {project.stack.length > 5 && (
+        {project.stack && project.stack.length > 5 && (
           <span className="skill-tag text-xs">+{project.stack.length - 5}</span>
         )}
       </div>
@@ -71,13 +73,15 @@ function ProjectCard({ project, index }) {
   );
 }
 
-export default function Projects() {
+export default function Projects({ projects: propProjects }) {
   const [activeFilter, setActiveFilter] = useState("All");
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.05 });
+  
+  const projectList = propProjects || staticProjects;
 
   const filtered = activeFilter === "All"
-    ? projects
-    : projects.filter((p) => p.category === activeFilter);
+    ? projectList
+    : projectList.filter((p) => p.category === activeFilter);
 
   return (
     <section id="projects" className="py-24 px-4 sm:px-6">
@@ -116,7 +120,7 @@ export default function Projects() {
         {/* Projects grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filtered.map((project, i) => (
-            <ProjectCard key={project.title} project={project} index={i} />
+            <ProjectCard key={`${project.title}-${i}`} project={project} index={i} />
           ))}
         </div>
 
